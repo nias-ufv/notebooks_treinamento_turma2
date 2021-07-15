@@ -1,2 +1,3 @@
-# notebooks_treinamento
+# Notebooks do Treinamento
 Este repositório será destinado para a entregas dos notebooks produzidos pelos alunos conforme forem avançando na apostila
+* Cada aluno deverá criar uma branch individual para realizar o upload de seus códigos
