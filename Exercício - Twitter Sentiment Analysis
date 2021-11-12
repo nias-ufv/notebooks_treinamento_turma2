@@ -1,0 +1,43 @@
+tweets = [
+"Wow, what a great day today!! #sunshine",
+"I feel sad about the things going on around us. #covid19",
+"I'm really excited to learn Python with @JovianML #zerotopandas",
+"This is a really nice song. #linkinpark",
+"The python programming language is useful for data science",
+"Why do bad things happen to me?",
+"Apple announces the release of the new iPhone 12. Fans are excited.",
+"Spent my day with family!! #happy",
+"Check out my blog post on common string operations in Python. #zerotopandas",
+"Freecodecamp has great coding tutorials. #skillup"
+]
+a = len(tweets)
+print('Existem %d tweets.\n' % a)
+
+happy_words = ['great', 'excited', 'happy', 'nice', 'wonderful', 'amazing', 'good', 'best']
+sad_words = ['sad', 'bad', 'tragic', 'unhappy', 'worst']
+is_happy = 0
+cont = 0
+happy_t = 0
+sad_t = 0
+
+for i in tweets:
+    for j in range (0, len(happy_words)):
+        h = tweets[cont].find(happy_words[j], 0, len(tweets[cont]))
+        if h != -1:
+            print('O tweet número %d é feliz'% (cont+1))
+            is_happy = 1
+            happy_t += 1
+            break
+    for g in range (0, len(sad_words)):
+        h2 = tweets[cont].find(sad_words[g], 0, len(tweets[cont]))
+        if h2 != -1:
+            print('O tweet número %d é triste'% (cont+1))
+            is_happy = 2
+            sad_t += 1
+            break
+    if is_happy == 0:
+        print('Não podemos afirmar nada sobre o tweet %d'% (cont+1))
+    cont += 1
+    is_happy = 0
+
+print('\n\nExistem %d tweets felizes e %d tweets tristes' % (happy_t, sad_t))
