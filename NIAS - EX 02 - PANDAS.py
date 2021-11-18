@@ -83,6 +83,6 @@ world_m_cov_c['Deaths/Million'] = (world_m_cov_c.Deaths/world_m_cov_c.Population
 
 # (g) Rankeando as linhas
 world_m_cov_c = world_m_cov_c.sort_values('Deaths/Million',ascending = False).reset_index().drop(columns = ['index'])
-world_m_cov_c['Ranking'] = world_m_cov_c['Deaths/Million'].rank(ascending = False) - 1
+world_m_cov_c['Ranking'] = world_m_cov_c['Deaths/Million'].rank(ascending = False)
 world_m_cov_c['Ranking'] = world_m_cov_c['Ranking'].astype('int64')
 
