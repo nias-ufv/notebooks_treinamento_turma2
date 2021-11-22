@@ -1,0 +1,123 @@
+
+# In[3]:
+
+
+#instalando as bibliotecas
+import pandas as pd
+import numpy as np
+print('.')
+
+
+# In[4]:
+
+
+#carregando o arquivo
+arq = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\covid_19_clean_complete.csv')
+arq.head
+
+
+# In[5]:
+
+
+#Letra A e B
+print('Existem %d linhas e %d colunas'%(len(arq), len(arq.columns)))
+print("As colunas são:")
+
+for i in range (0,len(arq.columns)):
+    print(arq.columns[i])
+
+
+# In[6]:
+
+
+#Letra C
+arq.info()
+#Os tipo de dado são os valores abaixo da coluna "Dtype"
+
+
+# In[7]:
+
+
+#Letra D e E
+arq.Date = pd.to_datetime(arq.Date)
+mean = arq.mean(numeric_only = None)
+median = arq.median(numeric_only = None)
+print(mean, '\n\n', median)
+#Os números abaixo são as médias e medianas das colunas que são int ou float
+
+
+# In[8]:
+
+
+#Letra F
+print('As colunas com valores vazios são:')
+for i in range (0, len(arq.columns)):
+    if arq.isna().any()[i]:
+        print(arq.columns[i])
+
+
+# In[9]:
+
+
+prov_china = arq[arq['Country/Region'] == 'China']
+prov_china.head()
+
+
+# In[176]:
+
+
+#N°2 Letra A
+prov_china2 = prov_china['Province/State'].drop_duplicates(keep='first')
+prov_china2.head
+
+
+# In[10]:
+
+
+#N°2 Letra B
+list = ['Confirmed', 'Active', 'Deaths','Recovered']
+prov_china2 = prov_china.loc[:,list]
+prov_china2.head
+#N°2 Letra D: A função a ser usada é .loc
+
+
+# In[11]:
+
+
+#N°2 Letra E
+top5 = prov_china.sort_values('Confirmed', ascending=False).drop_duplicates('Province/State').head(5)
+top5
+
+
+# In[12]:
+
+
+#N°3 Letra A
+def sem_prov(l):
+    if pd.notna(l['Province/State']):
+        l['Country/Region'] = l['Country/Region'] + '_' + l['Province/State']
+    return l
+
+
+# In[19]:
+
+
+#N°3 Letra B, C e D
+arq_copia = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\covid_19_clean_complete.csv')
+arq_copia = arq_copia.apply(sem_prov, axis = 1)
+arq_copia = arq_copia.drop(['Province/State'], axis = 1)
+
+
+# In[20]:
+
+
+#N° 4 Letra A
+world = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\worldometer_data.csv')
+world.head()
+
+
+# In[ ]:
+
+
+
+
