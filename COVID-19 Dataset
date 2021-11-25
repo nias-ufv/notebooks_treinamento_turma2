@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+# coding: utf-8
 
-# In[3]:
+# In[2]:
 
 
 #instalando as bibliotecas
@@ -8,7 +10,7 @@ import numpy as np
 print('.')
 
 
-# In[4]:
+# In[3]:
 
 
 #carregando o arquivo
@@ -16,7 +18,7 @@ arq = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\cov
 arq.head
 
 
-# In[5]:
+# In[4]:
 
 
 #Letra A e B
@@ -27,7 +29,7 @@ for i in range (0,len(arq.columns)):
     print(arq.columns[i])
 
 
-# In[6]:
+# In[5]:
 
 
 #Letra C
@@ -35,7 +37,7 @@ arq.info()
 #Os tipo de dado são os valores abaixo da coluna "Dtype"
 
 
-# In[7]:
+# In[6]:
 
 
 #Letra D e E
@@ -46,7 +48,7 @@ print(mean, '\n\n', median)
 #Os números abaixo são as médias e medianas das colunas que são int ou float
 
 
-# In[8]:
+# In[7]:
 
 
 #Letra F
@@ -56,14 +58,14 @@ for i in range (0, len(arq.columns)):
         print(arq.columns[i])
 
 
-# In[9]:
+# In[8]:
 
 
 prov_china = arq[arq['Country/Region'] == 'China']
 prov_china.head()
 
 
-# In[176]:
+# In[9]:
 
 
 #N°2 Letra A
@@ -99,7 +101,7 @@ def sem_prov(l):
     return l
 
 
-# In[19]:
+# In[13]:
 
 
 #N°3 Letra B, C e D
@@ -108,12 +110,37 @@ arq_copia = arq_copia.apply(sem_prov, axis = 1)
 arq_copia = arq_copia.drop(['Province/State'], axis = 1)
 
 
-# In[20]:
+# In[15]:
 
 
-#N° 4 Letra A
+#N° 4 Letra A e B
 world = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\worldometer_data.csv')
+world = world[['Country/Region','Continent','Population']]
 world.head()
+
+
+# In[27]:
+
+
+#N°4 Letra C e D
+covid_19_clean_complete = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\covid_19_clean_complete.csv')
+covid_19_clean_complete.groupby(['Country/Region']).sum()
+covid_world = covid_19_clean_complete.merge(world[['Country/Region','Population','Continent']],
+                                            on = 'Country/Region')
+covid_world
+
+
+# In[39]:
+
+
+#N°4 Letra E
+covid_deaths = covid_world.groupby('Continent', as_index = False).sum()
+
+covid_deaths['DeathsM'] = (covid_deaths['Deaths']/covid_deaths['Population'])*10**6
+covid_deaths = covid_deaths.sort_values(by = 'DeathsM', ascending = False)
+covid_deaths['Ranking'] =[x for x in range(1,len(covid_deaths)+1)]
+covid_deaths = covid_deaths.set_index("Ranking")
+covid_deaths
 
 
 # In[ ]:
