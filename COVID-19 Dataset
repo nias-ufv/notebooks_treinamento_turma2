@@ -119,7 +119,7 @@ world = world[['Country/Region','Continent','Population']]
 world.head()
 
 
-# In[27]:
+# In[97]:
 
 
 #N°4 Letra C e D
@@ -141,6 +141,81 @@ covid_deaths = covid_deaths.sort_values(by = 'DeathsM', ascending = False)
 covid_deaths['Ranking'] =[x for x in range(1,len(covid_deaths)+1)]
 covid_deaths = covid_deaths.set_index("Ranking")
 covid_deaths
+
+
+# In[41]:
+
+
+#Exercício 5
+import matplotlib.pyplot as plt
+import seaborn as sns
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[61]:
+
+
+covid_plt = arq.groupby(by = ['Date','WHO Region']).sum().reset_index(level = 'Date')
+covid_plt.head()
+
+
+# In[65]:
+
+
+covid_plt.Date = pd.to_datetime(covid_plt.Date)
+sns.set_style('whitegrid')
+
+
+plt.plot('Date','Deaths', data = covid_plt.loc[covid_plt.index == "Eastern Mediterranean"]);
+plt.plot('Date','Deaths', data = covid_plt.loc[covid_plt.index == "Europe"]);
+plt.plot('Date','Deaths', data = covid_plt.loc[covid_plt.index == "Americas"]);
+plt.xlabel('Date')
+plt.ylabel('Deaths')
+plt.legend(["Eastern Mediterranean",'Europe','Americas'])
+
+
+# In[106]:
+
+
+plt.figure(figsize =(10,6))
+plt.bar(arq['WHO Region'],arq['Deaths']);
+plt.title('Mortes por continente')
+plt.ylabel("Mortes")
+
+
+# In[164]:
+
+
+world = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\worldometer_data.csv')
+world = world[['Continent','Deaths/1M pop','Population']].groupby('Continent',as_index = False).mean().sort_values('Deaths/1M pop', ascending= False)
+world
+
+
+# In[165]:
+
+
+world = world.iloc[[0,1,2]]
+world
+
+
+# In[167]:
+
+
+plt.scatter('Population','Deaths/1M pop', data = world.iloc[0])
+plt.scatter('Population','Deaths/1M pop', data = world.iloc[1])
+plt.scatter('Population','Deaths/1M pop', data = world.iloc[2])
+plt.xlabel('Population *(10^7)')
+plt.ylabel('Deaths/1M pop')
+plt.legend(["South America",'Europe','North America'])
+
+
+# In[178]:
+
+
+world = pd.read_csv('C:\\Users\\victo\\OneDrive\\Área de Trabalho\\EAD\\Nias\\worldometer_data.csv')
+world.corr()
+plt.figure(figsize =(12,12))
+sns.heatmap(world.corr(), cmap='mako')
 
 
 # In[ ]:
