@@ -1,0 +1,63 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+np.random.seed(0)
+​
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+​
+test = pd.read_csv('/kaggle/input/titanic/test.csv')
+train = pd.read_csv('/kaggle/input/titanic/train.csv')
+train.describe( )
+
+test.info()
+train.info()
+
+#Limpando os dados de tipo str
+test2 = test.drop(columns = ['Name','Ticket','Cabin','Embarked','Sex'])
+train2 = train.drop(columns = ['Name','Ticket','Cabin','Embarked','Sex'])
+​
+
+test2 = test2.fillna(0)
+train2 = train2.dropna()
+train2.info()
+train2['Age_group'] = pd.cut(train2['Age'],bins = [10,20,30,40,50,60,70.80])
+​
+SurvivedP = []
+for i in trainAgeGroup.index:
+    SurvivedP.append(trainAgeGroup['Survived'][i]*100/train2.groupby(by = 'Age_group').count()['Survived'][i])
+trainAgeGroup['SurvivedP'] = SurvivedP
+ind = []
+for age in trainAgeGroup['Age_group'].values:
+    ind.append(str(age))
+
+SurvivedP = []
+for i in trainAgeGroup.index:
+    SurvivedP.append(trainAgeGroup['Survived'][i]*100/train2.groupby(by = 'Age_group').count()['Survived'][i])
+trainAgeGroup['SurvivedP'] = SurvivedP
+ind = []
+for age in trainAgeGroup['Age_group'].values:
+    ind.append(str(age))
+​
+plt.figure(figsize =(10,6))
+ax= plt.bar(ind, trainAgeGroup['SurvivedP']);
+plt.title('Sobreviventes por idade')
+plt.ylabel("Sobreviventes")
+plt.xlabel('Faixa etária')
+
+trainAgeGroup = train2.groupby(by = 'Pclass', as_index=False).sum()
+SurvivedP = []
+Porc = train2.groupby('Pclass',as_index=False).count()
+for i in trainAgeGroup.index:
+    SurvivedP.append(trainAgeGroup['Survived'][i]*100/Porc['Survived'][i])
+trainAgeGroup['SurvivedP'] = SurvivedP
+​
+plt.figure(figsize =(10,6))
+ax= plt.bar(Porc['Pclass'], trainAgeGroup['SurvivedP']);
+plt.title('Sobreviventes por classe')
+plt.ylabel("Sobreviventes")
+plt.xlabel('Classe')
