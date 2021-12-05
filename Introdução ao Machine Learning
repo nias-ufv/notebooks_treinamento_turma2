@@ -1,15 +1,21 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score
 %matplotlib inline
 np.random.seed(0)
-​
+
 import os
 for dirname, _, filenames in os.walk('/kaggle/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
-​
+
 test = pd.read_csv('/kaggle/input/titanic/test.csv')
 train = pd.read_csv('/kaggle/input/titanic/train.csv')
 train.describe( )
@@ -20,13 +26,18 @@ train.info()
 #Limpando os dados de tipo str
 test2 = test.drop(columns = ['Name','Ticket','Cabin','Embarked','Sex'])
 train2 = train.drop(columns = ['Name','Ticket','Cabin','Embarked','Sex'])
-​
+
+#test2 = test.drop(columns = ['Name','Ticket','Cabin','Embarked'])
+#train2 = train.drop(columns = ['Name','Ticket','Cabin','Embarked'])
 
 test2 = test2.fillna(0)
 train2 = train2.dropna()
 train2.info()
+
 train2['Age_group'] = pd.cut(train2['Age'],bins = [10,20,30,40,50,60,70.80])
-​
+
+
+trainAgeGroup = train2.groupby(by = 'Age_group', as_index=False).sum()
 SurvivedP = []
 for i in trainAgeGroup.index:
     SurvivedP.append(trainAgeGroup['Survived'][i]*100/train2.groupby(by = 'Age_group').count()['Survived'][i])
@@ -35,14 +46,6 @@ ind = []
 for age in trainAgeGroup['Age_group'].values:
     ind.append(str(age))
 
-SurvivedP = []
-for i in trainAgeGroup.index:
-    SurvivedP.append(trainAgeGroup['Survived'][i]*100/train2.groupby(by = 'Age_group').count()['Survived'][i])
-trainAgeGroup['SurvivedP'] = SurvivedP
-ind = []
-for age in trainAgeGroup['Age_group'].values:
-    ind.append(str(age))
-​
 plt.figure(figsize =(10,6))
 ax= plt.bar(ind, trainAgeGroup['SurvivedP']);
 plt.title('Sobreviventes por idade')
@@ -55,9 +58,66 @@ Porc = train2.groupby('Pclass',as_index=False).count()
 for i in trainAgeGroup.index:
     SurvivedP.append(trainAgeGroup['Survived'][i]*100/Porc['Survived'][i])
 trainAgeGroup['SurvivedP'] = SurvivedP
-​
+
 plt.figure(figsize =(10,6))
 ax= plt.bar(Porc['Pclass'], trainAgeGroup['SurvivedP']);
 plt.title('Sobreviventes por classe')
 plt.ylabel("Sobreviventes")
 plt.xlabel('Classe')
+
+trainAgeGroup = train2.groupby(by = 'Pclass', as_index=False).sum()
+SurvivedP = []
+Porc = train2.groupby('Pclass',as_index=False).count()
+for i in trainAgeGroup.index:
+    SurvivedP.append(trainAgeGroup['Survived'][i]*100/Porc['Survived'][i])
+trainAgeGroup['SurvivedP'] = SurvivedP
+
+plt.figure(figsize =(10,6))
+ax= plt.bar(Porc['Pclass'], trainAgeGroup['SurvivedP']);
+plt.title('Sobreviventes por classe')
+plt.ylabel("Sobreviventes")
+plt.xlabel('Classe')
+
+trainAgeGroup = train2.groupby(by = 'SibSp', as_index=False).sum()
+SurvivedP = []
+Porc = train2.groupby('SibSp',as_index=False).count()
+for i in trainAgeGroup.index:
+    SurvivedP.append(trainAgeGroup['Survived'][i]*100/Porc['Survived'][i])
+trainAgeGroup['SurvivedP'] = SurvivedP
+
+plt.figure(figsize =(10,6))
+ax= plt.bar(Porc['SibSp'], trainAgeGroup['SurvivedP']);
+plt.title('Sobreviventes por SibSp')
+plt.ylabel("Sobreviventes")
+plt.xlabel('SibSp')
+
+trainAgeGroup = train2.groupby(by = 'Parch', as_index=False).sum()
+SurvivedP = []
+Porc = train2.groupby('Parch',as_index=False).count()
+for i in trainAgeGroup.index:
+    SurvivedP.append(trainAgeGroup['Survived'][i]*100/Porc['Survived'][i])
+trainAgeGroup['SurvivedP'] = SurvivedP
+
+plt.figure(figsize =(10,6))
+ax= plt.bar(Porc['Parch'], trainAgeGroup['SurvivedP']);
+plt.title('Sobreviventes por Parch')
+plt.ylabel("Sobreviventes")
+plt.xlabel('Parch')
+
+train2 = train2.drop(columns='Age_group')
+trainX = train2.drop(columns='Survived')
+trainY = train2.Survived
+
+x_train, x_val, y_train, y_val = train_test_split(trainX, trainY, random_state=1, train_size=0.8)
+
+mod_for = RandomForestClassifier()
+mod_for.fit(x_train, y_train)
+
+pred_for = mod_for.predict(x_val)
+print(accuracy_score(y_val, pred_for))
+
+mod_for.fit(trainX, trainY)
+
+pred_for = mod_for.predict(test2)
+test_pred = pd.DataFrame(pred_for)  
+test_pred.to_csv('testPred.csv')
