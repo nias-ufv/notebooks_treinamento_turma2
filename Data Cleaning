@@ -1,0 +1,62 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+np.random.seed(0)
+
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+
+test = pd.read_csv('/kaggle/input/titanic/test.csv')
+train = pd.read_csv('/kaggle/input/titanic/train.csv')
+
+test.info()
+train.info()
+
+Data columns (total 11 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   PassengerId  418 non-null    int64  
+ 1   Pclass       418 non-null    int64  
+ 2   Name         418 non-null    object 
+ 3   Sex          418 non-null    object 
+ 4   Age          332 non-null    float64
+ 5   SibSp        418 non-null    int64  
+ 6   Parch        418 non-null    int64  
+ 7   Ticket       418 non-null    object 
+ 8   Fare         417 non-null    float64
+ 9   Cabin        91 non-null     object 
+ 10  Embarked     418 non-null    object 
+dtypes: float64(2), int64(4), object(5)
+
+Data columns (total 12 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   PassengerId  891 non-null    int64  
+ 1   Survived     891 non-null    int64  
+ 2   Pclass       891 non-null    int64  
+ 3   Name         891 non-null    object 
+ 4   Sex          891 non-null    object 
+ 5   Age          714 non-null    float64
+ 6   SibSp        891 non-null    int64  
+ 7   Parch        891 non-null    int64  
+ 8   Ticket       891 non-null    object 
+ 9   Fare         891 non-null    float64
+ 10  Cabin        204 non-null    object 
+ 11  Embarked     889 non-null    object 
+
+test2 = test.drop(columns = ['Ticket','Cabin'])
+train2 = train.drop(columns = ['Ticket','Cabin'])
+
+train2['Age'] = train2.Age.fillna(train2.Age.mean())
+test2['Age'] = test2.Age.fillna(test2.Age.mean())
+train2['Embarked'] = train2.Embarked.fillna(train2.Embarked.mode())
+test2['Fare'] = test2.Fare.fillna(test2.Fare.mean())
+
+train2['Age_group'] = pd.cut(train2['Age'],bins = 5)
+test2['Age_group'] = pd.cut(test2['Age'],bins = 5)
+train2['Fare_group'] = pd.qcut(train2['Fare'], 6)
+test2['Fare_group'] = pd.qcut(test2['Fare'], 6)
